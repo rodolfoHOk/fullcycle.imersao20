@@ -4,6 +4,10 @@
 
 - Typescript / Javascript
 - Nest.js
+- Rest API
+- Google Maps
+- Prisma ORM
+- Mongo DB
 
 ## Nest.js default doc
 

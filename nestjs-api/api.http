@@ -1,5 +1,13 @@
 ### GET Hello
 GET http://localhost:3000/test/hello
 
-### GET Places
+### GET Places 1
 GET http://localhost:3000/places?text=av governador valadares, betim, 1000
+
+### GET Places 2
+GET http://localhost:3000/places?text=av amazonas, belo horizonte, 1000
+
+### GET Directions
+@originId = EkBBdi4gR292LiBWYWxhZGFyZXMsIDEwMDAgLSBDZW50cm8sIEJldGltIC0gTUcsIDM2NDEwLTAyNiwgQnJhc2lsIjESLwoUChIJqWNAFJLDpgARpsy5kCM5OC8Q6AcqFAoSCXkSTsuRw6YAETPuVaoFp4Tx
+@destinationId = ChIJPUqddeKZpgARusD9CDpIBDQ
+GET http://localhost:3000/directions?originId={{ originId }}&destinationId={{ destinationId }}
