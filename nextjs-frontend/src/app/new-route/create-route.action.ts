@@ -1,5 +1,7 @@
 'use server';
 
+import { revalidateTag } from 'next/cache';
+
 export type CreateRouteActionResponse = {
   error?: string;
   success?: boolean;
@@ -53,6 +55,8 @@ export async function createRouteAction(
     console.error(await response.text());
     return { error: 'Failed to create route' };
   }
+
+  revalidateTag('routes');
 
   return { success: true };
 }
