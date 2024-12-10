@@ -4,8 +4,8 @@
 
 - Typescript / Javascript
 - Nest.js
-- Rest API
-- Google Maps
+- Rest Api
+- Google Maps Api
 - Prisma ORM
 - Mongo DB
 
