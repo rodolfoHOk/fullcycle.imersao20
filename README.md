@@ -33,3 +33,5 @@
 - [Nest.js API](/nestjs-api/README.md)
 
 - [Next.js Frontend](/nextjs-frontend/README.md)
+
+- [Go Simulator](/go-simulator/README.md)

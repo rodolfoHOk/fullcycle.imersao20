@@ -6,6 +6,7 @@
 - Next.js / React.js
 - Tailwind CSS
 - Google Maps Api
+- Websockets
 
 ## Next.js Default Doc
 

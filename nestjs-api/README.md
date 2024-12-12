@@ -8,6 +8,7 @@
 - Google Maps Api
 - Prisma ORM
 - Mongo DB
+- Websockets
 
 ## Nest.js default doc
 
