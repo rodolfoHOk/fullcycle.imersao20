@@ -22,6 +22,14 @@ type Route struct {
 	FreightPrice float64      `bson:"freight_price" json:"freight_price"`
 }
 
+func NewRoute(id string, distance int, directions []Directions) Route {
+	return Route{
+		ID:         id,
+		Distance:   distance,
+		Directions: directions,
+	}
+}
+
 type FreightService struct{}
 
 func NewFreightService() *FreightService {
