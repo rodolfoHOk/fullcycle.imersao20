@@ -1,4 +1,4 @@
-FROM mongo:8.0.3
+FROM mongo:8.0.3-noble
 
 ENV MONGO_REPLICA_PORT 27017
 ENV MONGO_REPLICA_HOST localhost

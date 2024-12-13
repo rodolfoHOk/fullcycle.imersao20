@@ -45,6 +45,7 @@ func (eh *EventHub) HandleEvent(msg []byte) error {
 		if err != nil {
 			return fmt.Errorf("error unmarshalling event: %w", err)
 		}
+
 		return eh.handleRouteCreated(event)
 
 	case "DeliveryStarted":

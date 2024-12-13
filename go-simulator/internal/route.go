@@ -1,9 +1,7 @@
 package internal
 
 import (
-	"context"
 	"math"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -41,17 +39,12 @@ func (fs *FreightService) Calculate(distance int) float64 {
 }
 
 type RouteService struct {
-	ctx            context.Context
 	mongo          *mongo.Client
 	freightService *FreightService
 }
 
 func NewRouteService(mongo *mongo.Client, freightService *FreightService) *RouteService {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
 	return &RouteService{
-		ctx:            ctx,
 		mongo:          mongo,
 		freightService: freightService,
 	}
@@ -72,7 +65,7 @@ func (rs *RouteService) CreateRoute(route Route) (Route, error) {
 	}
 	opts := options.Update().SetUpsert(true)
 
-	_, err := rs.mongo.Database("routes").Collection("routes").UpdateOne(rs.ctx, filter, update, opts)
+	_, err := rs.mongo.Database("routes").Collection("routes").UpdateOne(nil, filter, update, opts)
 	if err != nil {
 		return Route{}, err
 	}
@@ -83,10 +76,10 @@ func (rs *RouteService) CreateRoute(route Route) (Route, error) {
 func (rs *RouteService) GetRoute(id string) (Route, error) {
 	var route Route
 	filter := bson.M{
-		"_id": route.ID,
+		"_id": id,
 	}
 
-	err := rs.mongo.Database("routes").Collection("routes").FindOne(rs.ctx, filter).Decode(&route)
+	err := rs.mongo.Database("routes").Collection("routes").FindOne(nil, filter).Decode(&route)
 	if err != nil {
 		return Route{}, err
 	}
