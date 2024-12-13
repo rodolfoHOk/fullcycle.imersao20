@@ -10,6 +10,7 @@
 - Mongo DB
 - Websockets
 - Kafka Consumer and Producer
+- Docker
 
 ## Nest.js default doc
 

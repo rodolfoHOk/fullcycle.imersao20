@@ -7,6 +7,7 @@
 - Tailwind CSS
 - Google Maps Api
 - Websockets
+- Docker
 
 ## Next.js Default Doc
 

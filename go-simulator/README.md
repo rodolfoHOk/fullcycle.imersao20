@@ -5,6 +5,7 @@
 - Go Lang
 - Mongo DB
 - Kafka Consumer and Producer
+- Docker
 
 ## Guia
 
