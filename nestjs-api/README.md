@@ -9,6 +9,7 @@
 - Prisma ORM
 - Mongo DB
 - Websockets
+- Kafka Consumer and Producer
 
 ## Nest.js default doc
 

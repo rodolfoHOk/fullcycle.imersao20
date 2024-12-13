@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import * as KafkaLib from '@confluentinc/kafka-javascript';
 import { CreateRouteDto } from './dto/create-route.dto';
 import { UpdateRouteDto } from './dto/update-route.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -9,6 +10,7 @@ export class RoutesService {
   constructor(
     private prismaService: PrismaService,
     private directionsService: DirectionsService,
+    @Inject('KAFKA_PRODUCER') private kafkaProducer: KafkaLib.KafkaJS.Producer,
   ) {}
 
   async create(createRouteDto: CreateRouteDto) {
@@ -20,7 +22,7 @@ export class RoutesService {
 
     const legs = routes[0].legs[0];
 
-    return this.prismaService.route.create({
+    const route = await this.prismaService.route.create({
       data: {
         name: createRouteDto.name,
         source: {
@@ -49,6 +51,33 @@ export class RoutesService {
         ),
       },
     });
+
+    await this.kafkaProducer.send({
+      topic: 'route',
+      messages: [
+        {
+          value: JSON.stringify({
+            event: 'RouteCreated',
+            id: route.id,
+            distance: legs.distance.value,
+            directions: legs.steps.reduce((acc, step) => {
+              acc.push({
+                lat: step.start_location.lat,
+                lng: step.start_location.lng,
+              });
+
+              acc.push({
+                lat: step.end_location.lat,
+                lng: step.end_location.lng,
+              });
+              return acc;
+            }, []),
+          }),
+        },
+      ],
+    });
+
+    return route;
   }
 
   findAll() {
@@ -60,49 +89,31 @@ export class RoutesService {
   }
 
   async update(id: string, updateRouteDto: UpdateRouteDto) {
-    const { available_travel_modes, geocoded_waypoints, routes, request } =
-      await this.directionsService.getDirections(
-        updateRouteDto.source_id,
-        updateRouteDto.destination_id,
-      );
-
-    const legs = routes[0].legs[0];
-
     return this.prismaService.route.update({
-      data: {
-        name: updateRouteDto.name,
-        source: {
-          name: legs.start_address,
-          location: {
-            lat: legs.start_location.lat,
-            lng: legs.start_location.lng,
-          },
-        },
-        destination: {
-          name: legs.end_address,
-          location: {
-            lat: legs.end_location.lat,
-            lng: legs.end_location.lng,
-          },
-        },
-        duration: legs.duration.value,
-        distance: legs.distance.value,
-        directions: JSON.parse(
-          JSON.stringify({
-            available_travel_modes,
-            geocoded_waypoints,
-            routes,
-            request,
-          }),
-        ),
-      },
-      where: {
-        id,
-      },
+      where: { id },
+      data: updateRouteDto,
     });
   }
 
   remove(id: string) {
     return this.prismaService.route.delete({ where: { id } });
+  }
+
+  async startRoute(id: string) {
+    await this.prismaService.route.findUniqueOrThrow({
+      where: { id },
+    });
+
+    await this.kafkaProducer.send({
+      topic: 'route',
+      messages: [
+        {
+          value: JSON.stringify({
+            event: 'DeliveryStarted',
+            route_id: id,
+          }),
+        },
+      ],
+    });
   }
 }

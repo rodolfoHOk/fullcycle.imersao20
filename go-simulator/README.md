@@ -3,7 +3,8 @@
 ## Tecnologias
 
 - Go Lang
-- Kafka
+- Mongo DB
+- Kafka Consumer and Producer
 
 ## Guia
 
